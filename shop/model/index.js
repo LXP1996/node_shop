@@ -6,18 +6,13 @@ let sequelize=new Sequelize(config);
   //引入User实体表
  const User = sequelize.import(__dirname + '/user');
  const goodsType=sequelize.import(__dirname+'/goodsType')
-
-
+ const goods=sequelize.import(__dirname+'/goods')
+ const productSpec=sequelize.import(__dirname+'/productSpec')
 sequelize.sync();
 module.exports={
     User,
     goodsType,
+    goods,
+    productSpec
     // order,
 }
-// console.log(__filename);
-// sequelize.authenticate().then(() => {
-//     console.log('Connection has been established successfully.')
-//   })
-//   .catch(err => {
-//     console.error('Unable to connect to the database:', err)
-//   })

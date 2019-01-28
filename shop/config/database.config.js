@@ -1,11 +1,9 @@
 module.exports={
-    database:"shop",//线上数据库名称
-    database:"s_test",
+    database:"shop",//数据库名称
     username:"root",
-    password:"",
+    password:"wshiliupeng1996",
     dialect:"mysql",
- //线上地址   host:"132.232.115.224",
-    host:"localhost",
+    host:"132.232.115.224",
     port:"3306",
     pool:{
         max:10,

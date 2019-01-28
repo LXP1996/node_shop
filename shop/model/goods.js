@@ -1,0 +1,43 @@
+module.exports=(sequelize,DataTypes)=>
+sequelize.define('goods',{
+    id:{
+        type:DataTypes.INTEGER(11),
+        primaryKey:true,
+        autoIncrement:true
+    },
+    goodsName:{
+        type:DataTypes.STRING,
+        validate:{
+            isEven:function(value){
+                if(!(/^[A-Za-z0-9\u4e00-\u9fa5]+$/.test(value))){
+                    throw new Error("{code:0,msg:'商品名称格式错误'}");
+                      }
+            }
+        }
+    },
+    goodsState:{
+        type:DataTypes.STRING,
+        validate:{
+            isEven:function(value){
+              if(value!="true"&&value!="false"){
+           throw new Error("{code:0,msg:'商品上架状态true或者false'}")
+              }
+            }
+        }
+
+    },
+    goodsTypeID:{
+        type:DataTypes.STRING,
+        validate:{
+            //父级ID正则验证
+            isInt:{
+              isNumeric:true,
+              msg:"{code:0,msg:'商品类型ID必须是数字'}"
+            }
+          }
+    },
+    imgText:{
+        type:DataTypes.STRING,
+        allowNull:true
+    }
+})

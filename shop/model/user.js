@@ -1,5 +1,3 @@
-// /models/test/User.js
-
 module.exports= (sequelize, DataTypes) =>
   // define() 方法接受三个参数
   // 表名，表字段的定义和表的配置信息
@@ -18,7 +16,7 @@ module.exports= (sequelize, DataTypes) =>
       type: DataTypes.STRING,
       allowNull: false,
       // 唯一
-      unique: true
+      unique: false
     },
     password: {
       type: DataTypes.STRING,
