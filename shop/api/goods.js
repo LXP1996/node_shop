@@ -62,4 +62,37 @@ router.post("/goodsProduct/add",async(ctx)=>{
         ctx.body=err.errors[0].message;
     })
 })
+
+//查询商品基础信息
+router.get("/goodsProduct/serach",async(ctx)=>{
+    let obj=ctx.request.query;
+    await goods.productSpecSerachBase().then((res)=>{
+        ctx.body=res
+    }).catch(err=>{
+        ctx.body=err;
+    })
+})
+
+//查询商品所有信息
+router.get("/goodsProduct/serachall",async(ctx)=>{
+    let obj=ctx.request.query;
+    await goods.productSpecSerachall(obj).then((res)=>{
+        ctx.body=res
+    }).catch(err=>{
+        ctx.body=err;
+    })
+})
+
+//查询商品所有信息
+router.post("/goodsProduct/changeState",async(ctx)=>{
+    let obj=ctx.request.body;
+    await goods.goodsState(obj).then((res)=>{
+        ctx.body=res
+    }).catch(err=>{
+        ctx.body=err.errors[0].message;
+    })
+})
+
+
+
 module.exports=router;

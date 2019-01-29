@@ -9,6 +9,15 @@ let sequelize=new Sequelize(config);
  const goods=sequelize.import(__dirname+'/goods')
  const productSpec=sequelize.import(__dirname+'/productSpec')
 sequelize.sync();
+//    goods.hasOne(goodsType,{foreignKey:"goodsTypeID",sourceKey: 'id'})
+// goodsType.hasMany(goods,{foreignKey:"goodsTypeID",targetKey:"id"})
+// goods.belongsTo(goodsType,{foreignKey:"goodsTypeID",targetKey:"id"})
+    
+           goodsType.hasMany(goods,{foreignKey:"goodsTypeID",targetKey:"id"})
+           goods.belongsTo(goodsType,{foreignKey:"goodsTypeID",targetKey:"id"})
+           goods.hasMany(productSpec,{foreignKey:"goodsID",targetKey:"id"})
+           productSpec.belongsTo(goods,{foreignKey:"goodsID",targetKey:"id"})
+
 module.exports={
     User,
     goodsType,

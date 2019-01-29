@@ -25,6 +25,18 @@ function productSpec(obj) {
     return goods.productSpec(obj);
 }
 
+function productSpecSerachBase() {
+    return goods.productSpecSerachBase();
+}
+
+function productSpecSerachall(obj) {
+    return goods.productSpecSerachall(obj);
+}
+
+function goodsState(obj) {
+    return goods.goodsState(obj);
+}
+
 
 
 module.exports = {
@@ -33,6 +45,9 @@ module.exports = {
     goods_Type_delete,
     goods_Type_update,
     goods_add_base,
-    productSpec
+    productSpec,
+    productSpecSerachBase,
+    productSpecSerachall,
+    goodsState
 }
 

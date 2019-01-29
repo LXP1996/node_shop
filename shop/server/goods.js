@@ -69,8 +69,8 @@ async function goods_add_base(obj) {
     let temp = await goods.goods.create({
         'goodsName': obj.goodsName,
         'goodsState': obj.goodsState,
-        'goodsTypeID':obj.goodsTypeID,
-        'imgText':obj.imgText
+        'goodsTypeID': obj.goodsTypeID,
+        'imgText': obj.imgText
     });
     if (temp) {
         return { code: 1, msg: "success" };
@@ -84,11 +84,11 @@ async function productSpec(obj) {
     let temp = await goods.productSpec.create({
         'goodsName': obj.goodsName,
         'goodsID': obj.goodsID,
-        'costPrice':obj.costPrice,
-        'salesPrice':obj.salesPrice,
+        'costPrice': obj.costPrice,
+        'salesPrice': obj.salesPrice,
         'inventory': obj.inventory,
         'inventoryWarning': obj.inventoryWarning,
-        'goodsImg':obj.goodsImg,
+        'goodsImg': obj.goodsImg,
     });
     if (temp) {
         return { code: 1, msg: "success" };
@@ -97,11 +97,74 @@ async function productSpec(obj) {
     }
 }
 
+//商品列表 查询商品基础信息
+async function productSpecSerachBase() {
+    let data = [];
+    let temp = await goods.goods.findAll({
+        include: [{
+            model: goods.goodsType
+        }]
+    });
+    if (temp) {
+        for (const i of temp) {
+            data.push(i);
+        }
+        return { code: 1, msg: "success", data: data };
+    } else {
+        return { code: 0, msg: "error", data: data }
+    }
+}
+
+//查看商品所有信息
+async function productSpecSerachall(obj) {
+    let data = [];
+    let temp = await goods.goods.findAll({
+        include: [{
+            model: goods.goodsType
+        }, {
+            model: goods.productSpec
+        }],
+        where: {
+            id: obj.id
+        }
+    });
+    if (temp) {
+        for (const i of temp) {
+            data.push(i);
+        }
+        return { code: 1, msg: "success", data: data };
+    } else {
+        return { code: 0, msg: "error", data: data }
+    }
+}
+//商品上下架
+async function goodsState(obj) {
+    let data = [];
+    let temp = await goods.goods.update({
+        goodsState: obj.state
+    }, {
+        where: {
+            id: obj.id
+        }
+        });
+    if (temp) {
+        for (const i of temp) {
+            data.push(i);
+        }
+        return { code: 1, msg: "success", data: data };
+    } else {
+        return { code: 0, msg: "error", data: data }
+    }
+}
+//商品下架
 module.exports = {
     goods_Type_add,
     goods_Type_serach,
     goods_Type_delete,
     goods_Type_update,
     goods_add_base,
-    productSpec
+    productSpec,
+    productSpecSerachBase,
+    productSpecSerachall,
+    goodsState
 }
