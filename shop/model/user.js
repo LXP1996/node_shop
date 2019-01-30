@@ -16,10 +16,45 @@ module.exports= (sequelize, DataTypes) =>
       type: DataTypes.STRING,
       allowNull: false,
       // 唯一
-      unique: false
+      unique: false,
+      validate:{
+        isEven:function(value){
+            if(!(/^[A-Za-z0-9\u4e00-\u9fa5]+$/.test(value))){
+                throw new Error("{code:0,msg:'用户名称格式错误'}");
+                  }
+        }
+    }
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate:{
+        isEven:function(value){
+            if(!(/^[A-Za-z0-9]+$/.test(value))){
+                throw new Error("{code:0,msg:'用户密码格式错误'}");
+                  }
+        }
+    }
     },
+    black:{
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate:{
+        isEven:function(value){
+          if(value!="true"&&value!="false"){
+       throw new Error("{code:0,msg:'用户状态true或者false'}")
+          }
+        }
+    }
+    },
+    userinfo:{
+      type:DataTypes.STRING,
+      validate:{
+        //父级ID正则验证
+        isInt:{
+          isNumeric:true,
+          msg:"{code:0,msg:'用户详情ID必须是数字'}"
+        }
+      }
+    }
   })
