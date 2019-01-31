@@ -17,5 +17,24 @@ await  controller.user_add_black(obj).then(res=>{
 //响应数据
 })
 
+//增加用户user_add
+router.post("/useradd",async(ctx,next)=>{
+  var obj=ctx.request.body;
+await  controller.user_add(obj).then(res=>{
+  ctx.body=res;
+});
+//响应数据
+})
+
+//用户登陆user_login
+router.get("/userlogin",async(ctx,next)=>{
+  var obj=ctx.request.query;
+await  controller.user_login(obj).then(res=>{
+  ctx.body=res;
+});
+//响应数据
+})
+
+
 
 module.exports=router;
