@@ -39,5 +39,9 @@ sequelize.define('goods',{
     imgText:{
         type:DataTypes.STRING,
         allowNull:true
+    },
+    img:{
+        type:DataTypes.STRING,
+        allowNull:true 
     }
 })

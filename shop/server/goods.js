@@ -70,7 +70,8 @@ async function goods_add_base(obj) {
         'goodsName': obj.goodsName,
         'goodsState': obj.goodsState,
         'goodsTypeID': obj.goodsTypeID,
-        'imgText': obj.imgText
+        'imgText': obj.imgText,
+        'img': obj.img
     });
     if (temp) {
         return { code: 1, msg: "success" };
@@ -98,21 +99,28 @@ async function productSpec(obj) {
 }
 
 //商品列表 查询商品基础信息
-async function productSpecSerachBase() {
+async function productSpecSerachBase(obj) {
+    let limit_ = obj.limit || 10;//查询数据长度
+    let offset_ = obj.offset || 0;//从那条数据开始查询
     let data = [];
-    let temp = await goods.goods.findAll({
-        include: [{
-            model: goods.goodsType
-        }]
-    });
-    if (temp) {
-        for (const i of temp) {
-            data.push(i);
-        }
-        return { code: 1, msg: "success", data: data };
+    let count = 0;
+    console.log(limit_)
+    let temp = await goods.goods.findAndCountAll(
+        {
+            limit: parseInt(limit_),
+            offset: parseInt(offset_)
+        }).then(function (result) {
+            count = result.count;
+            data = result.rows;
+            console.log(count);
+        });
+
+    if (count >= 0) {
+        return { code: 1, msg: "success", data: data, count: count };
     } else {
         return { code: 0, msg: "error", data: data }
     }
+
 }
 
 //查看商品所有信息
@@ -143,9 +151,9 @@ async function goodsState(obj) {
     let temp = await goods.goods.update({
         goodsState: obj.state
     }, {
-        where: {
-            id: obj.id
-        }
+            where: {
+                id: obj.id
+            }
         });
     if (temp) {
         for (const i of temp) {

@@ -25,8 +25,8 @@ function productSpec(obj) {
     return goods.productSpec(obj);
 }
 
-function productSpecSerachBase() {
-    return goods.productSpecSerachBase();
+function productSpecSerachBase(obj) {
+    return goods.productSpecSerachBase(obj);
 }
 
 function productSpecSerachall(obj) {

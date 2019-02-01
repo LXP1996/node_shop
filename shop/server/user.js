@@ -5,7 +5,7 @@ async function user_serach() {
     let data = [];
     var pets = await user.User.findAll();
     for (let p of pets) {
-        data.push(p);
+        data.push(p);                                                                                   
     }
 
     return { code: 1, msg: "success", data: data };

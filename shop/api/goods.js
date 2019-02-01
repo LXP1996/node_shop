@@ -66,7 +66,7 @@ router.post("/goodsProduct/add",async(ctx)=>{
 //查询商品基础信息
 router.get("/goodsProduct/serach",async(ctx)=>{
     let obj=ctx.request.query;
-    await goods.productSpecSerachBase().then((res)=>{
+    await goods.productSpecSerachBase(obj).then((res)=>{
         ctx.body=res
     }).catch(err=>{
         ctx.body=err;
@@ -83,7 +83,7 @@ router.get("/goodsProduct/serachall",async(ctx)=>{
     })
 })
 
-//查询商品所有信息
+//商品上下架
 router.post("/goodsProduct/changeState",async(ctx)=>{
     let obj=ctx.request.body;
     await goods.goodsState(obj).then((res)=>{
