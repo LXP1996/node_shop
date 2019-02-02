@@ -37,7 +37,17 @@ function goodsState(obj) {
     return goods.goodsState(obj);
 }
 
+function add_to_car(obj) {
+    return goods.add_to_car(obj);
+}
 
+function car_all_info(obj) {
+    return goods.car_all_info(obj);
+}
+
+function car_delet(obj) {
+    return goods.car_delet(obj);
+}
 
 module.exports = {
     goods_Type_add,
@@ -48,6 +58,9 @@ module.exports = {
     productSpec,
     productSpecSerachBase,
     productSpecSerachall,
-    goodsState
+    goodsState,
+    add_to_car,
+    car_all_info,
+    car_delet
 }
 

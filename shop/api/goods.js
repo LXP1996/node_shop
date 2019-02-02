@@ -93,6 +93,34 @@ router.post("/goodsProduct/changeState",async(ctx)=>{
     })
 })
 
+//加入购物车
+router.post("/car/add",async(ctx)=>{
+    let obj=ctx.request.body;
+    await goods.add_to_car(obj).then((res)=>{
+        ctx.body=res
+    }).catch(err=>{
+        ctx.body=err;
+    })
+})
+//获取购物车信息
+router.get("/car/serach",async(ctx)=>{
+    let obj=ctx.request.query;
+    await goods.car_all_info(obj).then((res)=>{
+        ctx.body=res
+    }).catch(err=>{
+        ctx.body=err;
+    })
+})
 
+
+//获取购物车信息
+router.post("/car/delete",async(ctx)=>{
+    let obj=ctx.request.body;
+    await goods.car_delet(obj).then((res)=>{
+        ctx.body=res
+    }).catch(err=>{
+        ctx.body=err;
+    })
+})
 
 module.exports=router;
