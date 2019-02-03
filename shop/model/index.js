@@ -9,18 +9,26 @@ let sequelize=new Sequelize(config);
  const goods=sequelize.import(__dirname+'/goods')
  const productSpec=sequelize.import(__dirname+'/productSpec')
  const car=sequelize.import(__dirname+'/car')
+ const address=sequelize.import(__dirname+'/address')
+ const provinces=sequelize.import(__dirname+'/provinces')
+ const cities=sequelize.import(__dirname+'/cities')
+ const areas=sequelize.import(__dirname+'/areas')
+ const order=sequelize.import(__dirname+"/order")
+ const orderDetails=sequelize.import(__dirname+'/orderDetails')
 sequelize.sync();
-//    goods.hasOne(goodsType,{foreignKey:"goodsTypeID",sourceKey: 'id'})
-// goodsType.hasMany(goods,{foreignKey:"goodsTypeID",targetKey:"id"})
-// goods.belongsTo(goodsType,{foreignKey:"goodsTypeID",targetKey:"id"})
-    
-     
+
 
 module.exports={
     User,
     goodsType,
     goods,
     productSpec,
-    car
+    car,
+    address,
+    provinces,
+    cities,
+    areas,
+    order,
+    orderDetails
     // order,
 }
