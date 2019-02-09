@@ -5,7 +5,7 @@ async function user_serach() {
     let data = [];
     var pets = await user.User.findAll();
     for (let p of pets) {
-        data.push(p);                                                                                   
+        data.push(p);
     }
 
     return { code: 1, msg: "success", data: data };
@@ -30,15 +30,26 @@ async function user_add_black(obj) {
 
 //增加用户
 async function user_add(obj) {
-    let temp = await user.User.create({
-        username: obj.username,
-        password: obj.password,
-        black: "true"
+    //判断用户是否已经存在
+    let t = await user.User.findAll({
+        where: {
+            username: obj.username
+        }
     })
-    if (temp) {
-        return { code: 1, msg: "success" }
+    if (t.length > 0) {
+        return { code: 1, msg: "改用户已经存在" }
     } else {
-        return { code: 0, msg: "error" }
+
+        let temp = await user.User.create({
+            username: obj.username,
+            password: obj.password,
+            black: "true"
+        })
+        if (temp) {
+            return { code: 1, msg: "success" }
+        } else {
+            return { code: 0, msg: "error" }
+        }
     }
 }
 
@@ -63,11 +74,45 @@ async function user_login(obj) {
         return { code: 0, msg: "账号错误" }
     }
 }
-
+//添加用户详情信息
+async function add_userinfo(obj) {
+    let temp = await user.userinfo.create({
+        sex: obj.sex,
+        img: obj.img,
+        age: obj.age,
+        info: obj.info,
+        name: obj.name
+    })
+    if (temp) {
+        return { code: 1, msg: "success" }
+    } else {
+        return { code: 0, msg: "error" }
+    }
+}
+//修改用户详情信息
+async function update_userinfo(obj) {
+    let temp = await user.userinfo.update({
+        sex: obj.sex,
+        age: obj.age,
+        info: obj.info,
+        name: obj.name,
+    }, {
+            where: {
+                id: obj.userID
+            }
+        })
+    if (temp) {
+        return { code: 1, msg: "success" }
+    } else {
+        return { code: 0, msg: "error" }
+    }
+}
 module.exports = {
     user_serach,
     user_add_black,
     user_add,
-    user_login
+    user_login,
+    add_userinfo,
+    update_userinfo
 }
 

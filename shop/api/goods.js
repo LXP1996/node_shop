@@ -123,4 +123,60 @@ router.post("/car/delete",async(ctx)=>{
     })
 })
 
+//商品评论
+router.post("/add_comments",async(ctx)=>{
+    let obj=ctx.request.body;
+    await goods.goodsComments(obj).then((res)=>{
+        ctx.body=res
+    }).catch(err=>{
+        ctx.body=err;
+    })
+})
+//评论回复
+router.post("/reply_comments",async(ctx)=>{
+    let obj=ctx.request.body;
+    await goods.CommentsReply(obj).then((res)=>{
+        ctx.body=res
+    }).catch(err=>{
+        ctx.body=err;
+    })
+})
+//根据商品ID查询评论内容和回复内容
+router.post("/query_comments",async(ctx)=>{
+    let obj=ctx.request.body;
+    await goods.query_comments(obj).then((res)=>{
+        ctx.body=res
+    }).catch(err=>{
+        ctx.body=err;
+    })
+})
+
+router.post("/add_collection",async(ctx)=>{
+    let obj=ctx.request.body;
+    await goods.add_collection(obj).then((res)=>{
+        ctx.body=res
+    }).catch(err=>{
+        ctx.body=err;
+    })
+})
+
+router.get("/query_collection",async(ctx)=>{
+    let obj=ctx.request.query;
+    await goods.query_collection(obj).then((res)=>{
+        ctx.body=res
+    }).catch(err=>{
+        ctx.body=err;
+    })
+})
+
+router.post("/delete_collection",async(ctx)=>{
+    let obj=ctx.request.body;
+    await goods.delete_collection(obj).then((res)=>{
+        ctx.body=res
+    }).catch(err=>{
+        ctx.body=err;
+    })
+})
+
+
 module.exports=router;

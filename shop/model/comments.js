@@ -1,0 +1,45 @@
+module.exports=(sequelize,DataTypes)=>
+sequelize.define('comments',{
+    id:{
+        type:DataTypes.INTEGER(11),
+        primaryKey:true,
+        autoIncrement:true
+    },
+    userID:{
+        type:DataTypes.STRING,
+        validate:{
+            isInt:{
+                isNumeric:true,
+                msg:"{code:0,msg:'用户ID必须是数字'}"
+              }
+        }
+    },
+    goodsID:{
+        type:DataTypes.STRING,
+        validate:{
+            isInt:{
+                isNumeric:true,
+                msg:"{code:0,msg:'商品ID必须是数字'}"
+              }
+        }
+
+    },
+    commentsContent:{
+        type:DataTypes.STRING,
+        validate:{
+            isEven:function(value){
+                if(!(/^[A-Za-z0-9\u4e00-\u9fa5]+$/.test(value))){
+                    throw new Error("{code:0,msg:'商品评论内容格式错误'}");
+                      }
+            }
+        }
+    },
+    commentsTime:{
+        type:DataTypes.STRING,
+        allowNull:true
+    },
+    img:{
+        type:DataTypes.STRING,
+        allowNull:true 
+    }
+})
