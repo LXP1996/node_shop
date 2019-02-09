@@ -49,6 +49,27 @@ function car_delet(obj) {
     return goods.car_delet(obj);
 }
 
+function goodsComments(obj) {
+    return goods.goodsComments(obj);
+}
+
+function CommentsReply(obj) {
+    return goods.CommentsReply(obj);
+}
+
+function query_comments(obj) {
+    return goods.query_comments(obj);
+}
+function add_collection(obj) {
+    return goods.add_collection(obj);
+}
+function query_collection(obj) {
+    return goods.query_collection(obj);
+}
+function delete_collection(obj) {
+    return goods.delete_collection(obj);
+}
+
 module.exports = {
     goods_Type_add,
     goods_Type_serach,
@@ -61,6 +82,12 @@ module.exports = {
     goodsState,
     add_to_car,
     car_all_info,
-    car_delet
+    car_delet,
+    goodsComments,
+    CommentsReply,
+    query_comments,
+    add_collection,
+    query_collection,
+    delete_collection
 }
 

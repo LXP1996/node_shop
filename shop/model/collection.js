@@ -1,0 +1,27 @@
+module.exports=(sequelize,DataTypes)=>
+sequelize.define('collection',{
+    id:{
+        type:DataTypes.INTEGER(11),
+        primaryKey:true,
+        autoIncrement:true
+    },
+    userID:{
+        type:DataTypes.STRING,
+        validate:{
+            isInt:{
+                isNumeric:true,
+                msg:"{code:0,msg:'用户ID必须是数字'}"
+              }
+        }
+    },
+    goodsID:{
+        type:DataTypes.STRING,
+        validate:{
+            isInt:{
+                isNumeric:true,
+                msg:"{code:0,msg:'商品ID必须是数字'}"
+              }
+        }
+
+    }
+})

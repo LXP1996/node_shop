@@ -33,6 +33,9 @@ function query_address(obj) {
 function add_order(obj) {
     return order.add_order(obj);
 }
+function order_list(obj) {
+    return order.order_list(obj);
+}
 module.exports = {
     add_address,
     delete_address,
@@ -42,5 +45,6 @@ module.exports = {
     query_c,
     query_a,
     query_address,
-    add_order
+    add_order,
+    order_list
 }

@@ -254,6 +254,114 @@ async function car_delet(obj) {
     }
 }
 
+//商品评论
+async function goodsComments(obj) {
+    let date=new Date();
+    let temp = await goods.comments.create({
+     userID:obj.userID,
+     goodsID:obj.goodsID,
+     commentsContent:obj.commentsContent,
+     commentsTime:`${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${date.getHours()}/${date.getSeconds()}`,
+     img:obj.imgUrl
+    })
+    if (temp) {
+        return { code: 1, msg: "success" };
+    } else {
+        return { code: 0, msg: "error" }
+    }
+}
+
+//评论回复
+async function CommentsReply(obj) {
+    let date=new Date();
+    let temp = await goods.reply.create({
+     userID:obj.userID,
+     commentsID:obj.commentsID,
+     replyContent:obj.replyContent,
+     replyTime:`${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${date.getHours()}/${date.getSeconds()}`
+    })
+    if (temp) {
+        return { code: 1, msg: "success" };
+    } else {
+        return { code: 0, msg: "error" }
+    }
+}
+//根据商品ID查询评论内容和回复内容
+async function query_comments(obj) {
+     //表之间建立关系
+    //  goods.car.belongsTo(goods.goods, { foreignKey: "goodsID", targetKey: "id" })
+    //  goods.car.belongsTo(goods.productSpec, { foreignKey: "goods_ID", targetKey: "id" })
+     goods.comments.hasMany(goods.reply, { foreignKey: "commentsID", targetKey: "id" })
+     goods.comments.belongsTo(goods.User, { foreignKey: "userID", targetKey: "id" })
+     goods.reply.belongsTo(goods.User, { foreignKey: "userID", targetKey: "id" })
+     let temp=await goods.comments.findAll({
+        attributes:["commentsContent","commentsTime","img","goodsID"],
+        where:{
+            goodsID:obj.goodsID
+        },
+        include:[{
+            attributes:["commentsID","replyContent","id","replyTime"],
+            model:goods.reply,
+            include:[{
+                model:goods.User,
+                attributes:["username"]
+            }]
+        },{
+           model:goods.User,
+           attributes:["username"]
+        }]
+       
+    })
+    if (temp.length>0) {
+        return { code: 1, msg: "success" ,data: temp};
+    } else {
+        return { code: 0, msg: "error" }
+    }
+}
+
+//新增收藏商品
+async function add_collection(obj) {
+    let temp = await goods.collection.create({
+        userID:obj.userID,
+        goodsID:obj.goodsID,
+       })
+       if (temp) {
+           return { code: 1, msg: "success" };
+       } else {
+           return { code: 0, msg: "error" }
+       }
+}
+//查询收藏的商品
+async function query_collection(obj) {
+    goods.collection.belongsTo(goods.goods,{foreignKey: "goodsID", targetKey: "id" })
+    let temp = await goods.collection.findAll({
+        attributes:["goodsID","id"],
+       include:[{
+           model:goods.goods
+       }],
+       where:{
+           userID:obj.userID
+       }
+       })
+       if (temp) {
+           return { code: 1, msg: "success" ,data:temp};
+       } else {
+           return { code: 0, msg: "error" }
+       }
+}
+//删除收藏的商品
+async function delete_collection(obj) {
+    let temp=await goods.collection.destroy({
+        where:{
+            id:obj.id
+        }
+    })
+    if (temp) {
+        return { code: 1, msg: "success" };
+    } else {
+        return { code: 0, msg: "error" }
+    }
+}
 module.exports = {
     goods_Type_add,
     goods_Type_serach,
@@ -266,5 +374,11 @@ module.exports = {
     goodsState,
     add_to_car,
     car_all_info,
-    car_delet
+    car_delet,
+    goodsComments,
+    CommentsReply,
+    query_comments,
+    add_collection,
+    query_collection,
+    delete_collection
 }

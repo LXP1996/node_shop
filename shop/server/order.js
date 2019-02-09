@@ -133,20 +133,20 @@ async function query_address(obj) {
     order.address.belongsTo(order.provinces, { foreignKey: "pID", targetKey: "id" });
     order.address.belongsTo(order.cities, { foreignKey: "cID", targetKey: "id" });
     order.address.belongsTo(order.areas, { foreignKey: "aID", targetKey: "id" });
-    let temp="";
-    if(obj.addressID!=null){
-        temp= await order.address.findAll({
+    let temp = "";
+    if (obj.addressID != null) {
+        temp = await order.address.findAll({
             attributes: ["id", "userID", "pID", "cID", "aID", "DetailedAddress", "defaultAddress"],
             include: [{
                 model: order.provinces
             }, { model: order.cities }, { model: order.areas }],
             where: {
                 userID: obj.userID,
-                id:obj.addressID
+                id: obj.addressID
             }
         })
-    }else{
-        temp= await order.address.findAll({
+    } else {
+        temp = await order.address.findAll({
             attributes: ["id", "userID", "pID", "cID", "aID", "DetailedAddress", "defaultAddress"],
             include: [{
                 model: order.provinces
@@ -156,7 +156,7 @@ async function query_address(obj) {
             }
         })
     }
-    
+
     if (temp) {
         return { code: 1, msg: "success", data: temp }
     } else {
@@ -165,28 +165,93 @@ async function query_address(obj) {
 }
 //增加订单
 async function add_order(obj) {
-    let date=new Date();
-    let temp=await order.order.create({
-        addressID:obj.addressID,
-        goodsID:obj.goodsID,
-        userID:obj.userID,//待修改
-        goodsNum:obj.goodsNum
+    let date = new Date();
+    let temp = await order.order.create({
+        addressID: obj.addressID,
+        goodsID: obj.goodsID,
+        userID: obj.userID,//待修改
+        goodsNum: obj.goodsNum
     })
     console.log(temp.id)
-    let temp2=await order.orderDetails.create({
-        id:new Date().getTime()+temp.id,
-        orderID:temp.id,
-        orderTime:`${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${date.getHours()}/${date.getSeconds()}`,
-        orderState:1
+    let temp2 = await order.orderDetails.create({
+        id: new Date().getTime() + temp.id,
+        orderID: temp.id,
+        orderTime: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${date.getHours()}/${date.getSeconds()}`,
+        orderState: 1
     })
-    if (temp&&temp2) {
+    if (temp && temp2) {
         return { code: 1, msg: "success" }
     } else {
         return { code: 0, msg: "error" }
     }
 }
 
-//查询订单数据
+//订单列表
+async function order_list(obj) {
+    let limit_ = obj.limit || 10;//查询数据长度
+    let offset_ = obj.offset || 0;//从那条数据开始查询
+    let data = [];
+    let count = 0;
+    //多表联查
+    order.orderDetails.belongsTo(order.order, { foreignKey: "orderID", targetKey: "id" })
+    order.order.belongsTo(order.User, { foreignKey: "userID", targetKey: "id" })
+    order.order.belongsTo(order.address, { foreignKey: "addressID", targetKey: "id" })
+    order.order.belongsTo(order.goods, { foreignKey: "goodsID", targetKey: "id" })
+    //根据订单状态查询
+    let orderState = obj.orderState;
+    if (orderState == undefined) {
+        let temp = await order.orderDetails.findAndCountAll(
+            {
+                include: [{
+                    model: order.order,
+                    include:[{
+                model:order.User
+                    },{
+                        model:order.address
+                    },{
+                        model:order.goods
+                    }
+                ]
+                }],
+                limit: parseInt(limit_),
+                offset: parseInt(offset_)
+            }).then(function (result) {
+                count = result.count;
+                data = result.rows;
+            });
+    } else {
+        let temp = await order.orderDetails.findAndCountAll(
+            {
+                where: {
+                    orderState: obj.orderState
+                },
+                include: [{
+                    model: order.order,
+                    include:[{
+                model:order.User
+                    },{
+                        model:order.address
+                    },{
+                        model:order.goods
+                    }
+                ]
+                }],
+                limit: parseInt(limit_),
+                offset: parseInt(offset_)
+            }).then(function (result) {
+                count = result.count;
+                data = result.rows;
+            });
+    }
+
+
+    if (count >= 0) {
+        return { code: 1, msg: "success", data: data, count: count };
+    } else {
+        return { code: 0, msg: "error", data: data }
+    }
+
+}
 
 module.exports = {
     add_address,
@@ -197,5 +262,6 @@ module.exports = {
     query_c,
     query_a,
     query_address,
-    add_order
+    add_order,
+    order_list
 }

@@ -96,6 +96,16 @@ router.post("/add_order",async (ctx) => {
     });
 
 })
+//增加订单
+router.get("/order_list",async (ctx) => {
+    let obj = ctx.request.query;
+    await controller.order_list(obj).then(res => {
+        ctx.body = res;
+    }).catch(err => {
+        ctx.body = err.errors[0].message
+    });
+
+})
 
 
 
