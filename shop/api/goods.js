@@ -177,6 +177,25 @@ router.post("/delete_collection",async(ctx)=>{
         ctx.body=err;
     })
 })
+//商品基础信息修改
+router.post("/updata_goods_base",async(ctx)=>{
+    let obj=ctx.request.body;
+    await goods.updata_goods_base(obj).then((res)=>{
+        ctx.body=res
+    }).catch(err=>{
+        ctx.body=err;
+    })
+})
+
+//商品规格修改
+router.post("/updata_productSpec",async(ctx)=>{
+    let obj=ctx.request.body;
+    await goods.updata_productSpec(obj).then((res)=>{
+        ctx.body=res
+    }).catch(err=>{
+        ctx.body=err;
+    })
+})
 
 
 module.exports=router;

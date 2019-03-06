@@ -7,7 +7,7 @@ async function goods_Type_add(obj) {
         'fid': obj.fid
     });
     if (temp) {
-        return { code: 1, msg: "success" };
+        return { code: 1, msg: "success", data: temp };
     } else {
         return { code: 0, msg: "error" }
     }
@@ -16,11 +16,18 @@ async function goods_Type_add(obj) {
 //根据FID查询商品类型
 async function goods_Type_serach(obj) {
     let data = [];
-    let temp = await goods.goodsType.findAll({
-        where: {
-            "fid": obj.fid
-        }
-    })
+    let temp = null;
+    console.log(obj.fid)
+    if (obj.fid == undefined) {
+        temp = await goods.goodsType.findAll();
+    } else {
+        temp = await goods.goodsType.findAll({
+            where: {
+                "fid": obj.fid
+            }
+        })
+    }
+
 
     if (temp) {
         for (const i of temp) {
@@ -74,22 +81,62 @@ async function goods_add_base(obj) {
         'img': obj.img
     });
     if (temp) {
+        return { code: 1, msg: "success",data:temp };
+    } else {
+        return { code: 0, msg: "error" }
+    }
+}
+//修改商品基础信息
+async function updata_goods_base(obj) {
+    let temp = await goods.goods.update({
+        'goodsName': obj.goodsName,
+        'goodsState': obj.goodsState,
+        'goodsTypeID': obj.goodsTypeID,
+        'imgText': obj.imgText,
+        'img': obj.img
+    },{
+        where:{
+            id:obj.id
+        }
+    });
+    if (temp) {
+        return { code: 1, msg: "success",data:temp };
+    } else {
+        return { code: 0, msg: "error" }
+    }
+}
+
+//添加商品规格基础信息
+async function productSpec(obj) {
+    let temp = await goods.productSpec.create({
+        'goodsName': obj.goodsName,
+        'goodsID': parseInt(obj.goodsID),
+        'costPrice': parseInt(obj.costPrice),
+        'salesPrice': parseInt(obj.salesPrice),
+        'inventory': parseInt(obj.inventory),
+        'inventoryWarning': parseInt(obj.inventoryWarning),
+        'goodsImg': obj.goodsImg,
+    });
+    if (temp) {
         return { code: 1, msg: "success" };
     } else {
         return { code: 0, msg: "error" }
     }
 }
 
-//添加商品基础信息
-async function productSpec(obj) {
-    let temp = await goods.productSpec.create({
+//商品规格修改
+async function updata_productSpec(obj) {
+    let temp = await goods.productSpec.update({
         'goodsName': obj.goodsName,
-        'goodsID': obj.goodsID,
-        'costPrice': obj.costPrice,
-        'salesPrice': obj.salesPrice,
-        'inventory': obj.inventory,
-        'inventoryWarning': obj.inventoryWarning,
+        'costPrice': parseInt(obj.costPrice),
+        'salesPrice': parseInt(obj.salesPrice),
+        'inventory': parseInt(obj.inventory),
+        'inventoryWarning': parseInt(obj.inventoryWarning),
         'goodsImg': obj.goodsImg,
+    },{
+        where:{
+            id:obj.id
+        }
     });
     if (temp) {
         return { code: 1, msg: "success" };
@@ -104,15 +151,18 @@ async function productSpecSerachBase(obj) {
     let offset_ = obj.offset || 0;//从那条数据开始查询
     let data = [];
     let count = 0;
-    console.log(limit_)
+    goods.goods.belongsTo(goods.goodsType,{foreignKey:"goodsTypeID",targetKey:"id"})
     let temp = await goods.goods.findAndCountAll(
         {
+            include:[{
+            model:goods.goodsType
+            }],
             limit: parseInt(limit_),
             offset: parseInt(offset_)
         }).then(function (result) {
             count = result.count;
             data = result.rows;
-            console.log(count);
+            
         });
 
     if (count >= 0) {
@@ -125,10 +175,9 @@ async function productSpecSerachBase(obj) {
 
 //查看商品所有信息
 async function productSpecSerachall(obj) {
-    //    goods.goodsType.hasMany(goods.goods,{foreignKey:"goodsTypeID",targetKey:"id"})
     goods.goods.belongsTo(goods.goodsType, { foreignKey: "goodsTypeID", targetKey: "id" })
     goods.goods.hasMany(goods.productSpec, { foreignKey: "goodsID", targetKey: "id" })
-    //goods.productSpec.belongsTo(goods.goods,{foreignKey:"goodsID",targetKey:"id"})
+
     let data = [];
     let temp = await goods.goods.findAll({
         include: [{
@@ -239,7 +288,7 @@ async function car_all_info(obj) {
 
 //删除购物车数据
 async function car_delet(obj) {
-    
+
     let temp = await goods.car.destroy({
         where: {
             id: {
@@ -247,7 +296,7 @@ async function car_delet(obj) {
             }
         }
     })
-    if (temp>0) {
+    if (temp > 0) {
         return { code: 1, msg: "success" };
     } else {
         return { code: 0, msg: "error" }
@@ -256,13 +305,13 @@ async function car_delet(obj) {
 
 //商品评论
 async function goodsComments(obj) {
-    let date=new Date();
+    let date = new Date();
     let temp = await goods.comments.create({
-     userID:obj.userID,
-     goodsID:obj.goodsID,
-     commentsContent:obj.commentsContent,
-     commentsTime:`${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${date.getHours()}/${date.getSeconds()}`,
-     img:obj.imgUrl
+        userID: obj.userID,
+        goodsID: obj.goodsID,
+        commentsContent: obj.commentsContent,
+        commentsTime: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${date.getHours()}/${date.getSeconds()}`,
+        img: obj.imgUrl
     })
     if (temp) {
         return { code: 1, msg: "success" };
@@ -273,12 +322,12 @@ async function goodsComments(obj) {
 
 //评论回复
 async function CommentsReply(obj) {
-    let date=new Date();
+    let date = new Date();
     let temp = await goods.reply.create({
-     userID:obj.userID,
-     commentsID:obj.commentsID,
-     replyContent:obj.replyContent,
-     replyTime:`${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${date.getHours()}/${date.getSeconds()}`
+        userID: obj.userID,
+        commentsID: obj.commentsID,
+        replyContent: obj.replyContent,
+        replyTime: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${date.getHours()}/${date.getSeconds()}`
     })
     if (temp) {
         return { code: 1, msg: "success" };
@@ -288,32 +337,32 @@ async function CommentsReply(obj) {
 }
 //根据商品ID查询评论内容和回复内容
 async function query_comments(obj) {
-     //表之间建立关系
+    //表之间建立关系
     //  goods.car.belongsTo(goods.goods, { foreignKey: "goodsID", targetKey: "id" })
     //  goods.car.belongsTo(goods.productSpec, { foreignKey: "goods_ID", targetKey: "id" })
-     goods.comments.hasMany(goods.reply, { foreignKey: "commentsID", targetKey: "id" })
-     goods.comments.belongsTo(goods.User, { foreignKey: "userID", targetKey: "id" })
-     goods.reply.belongsTo(goods.User, { foreignKey: "userID", targetKey: "id" })
-     let temp=await goods.comments.findAll({
-        attributes:["commentsContent","commentsTime","img","goodsID"],
-        where:{
-            goodsID:obj.goodsID
+    goods.comments.hasMany(goods.reply, { foreignKey: "commentsID", targetKey: "id" })
+    goods.comments.belongsTo(goods.User, { foreignKey: "userID", targetKey: "id" })
+    goods.reply.belongsTo(goods.User, { foreignKey: "userID", targetKey: "id" })
+    let temp = await goods.comments.findAll({
+        attributes: ["commentsContent", "commentsTime", "img", "goodsID"],
+        where: {
+            goodsID: obj.goodsID
         },
-        include:[{
-            attributes:["commentsID","replyContent","id","replyTime"],
-            model:goods.reply,
-            include:[{
-                model:goods.User,
-                attributes:["username"]
+        include: [{
+            attributes: ["commentsID", "replyContent", "id", "replyTime"],
+            model: goods.reply,
+            include: [{
+                model: goods.User,
+                attributes: ["username"]
             }]
-        },{
-           model:goods.User,
-           attributes:["username"]
+        }, {
+            model: goods.User,
+            attributes: ["username"]
         }]
-       
+
     })
-    if (temp.length>0) {
-        return { code: 1, msg: "success" ,data: temp};
+    if (temp.length > 0) {
+        return { code: 1, msg: "success", data: temp };
     } else {
         return { code: 0, msg: "error" }
     }
@@ -322,38 +371,38 @@ async function query_comments(obj) {
 //新增收藏商品
 async function add_collection(obj) {
     let temp = await goods.collection.create({
-        userID:obj.userID,
-        goodsID:obj.goodsID,
-       })
-       if (temp) {
-           return { code: 1, msg: "success" };
-       } else {
-           return { code: 0, msg: "error" }
-       }
+        userID: obj.userID,
+        goodsID: obj.goodsID,
+    })
+    if (temp) {
+        return { code: 1, msg: "success" };
+    } else {
+        return { code: 0, msg: "error" }
+    }
 }
 //查询收藏的商品
 async function query_collection(obj) {
-    goods.collection.belongsTo(goods.goods,{foreignKey: "goodsID", targetKey: "id" })
+    goods.collection.belongsTo(goods.goods, { foreignKey: "goodsID", targetKey: "id" })
     let temp = await goods.collection.findAll({
-        attributes:["goodsID","id"],
-       include:[{
-           model:goods.goods
-       }],
-       where:{
-           userID:obj.userID
-       }
-       })
-       if (temp) {
-           return { code: 1, msg: "success" ,data:temp};
-       } else {
-           return { code: 0, msg: "error" }
-       }
+        attributes: ["goodsID", "id"],
+        include: [{
+            model: goods.goods
+        }],
+        where: {
+            userID: obj.userID
+        }
+    })
+    if (temp) {
+        return { code: 1, msg: "success", data: temp };
+    } else {
+        return { code: 0, msg: "error" }
+    }
 }
 //删除收藏的商品
 async function delete_collection(obj) {
-    let temp=await goods.collection.destroy({
-        where:{
-            id:obj.id
+    let temp = await goods.collection.destroy({
+        where: {
+            id: obj.id
         }
     })
     if (temp) {
@@ -380,5 +429,7 @@ module.exports = {
     query_comments,
     add_collection,
     query_collection,
-    delete_collection
+    delete_collection,
+    updata_goods_base,
+    updata_productSpec
 }

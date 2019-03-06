@@ -18,6 +18,7 @@ router.post("/upload",async(ctx,next)=>{
 
   const file = ctx.request.files.file; // 上传的文件在ctx.request.files.file
   // 创建可读流
+  console.log(path)
   const reader = fs.createReadStream(file.path);
   // 修改文件的名称
   var myDate = new Date();

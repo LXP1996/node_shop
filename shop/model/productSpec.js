@@ -21,7 +21,7 @@ sequelize.define('productSpec',{
         validate:{
             //商品ID正则验证
             isInt:{
-              isNumeric:true,
+            
               msg:"{code:0,msg:'商品ID必须是数字'}"
             }
           }
@@ -32,7 +32,7 @@ sequelize.define('productSpec',{
         validate:{
             //商品成本价格正则验证
             isInt:{
-              isNumeric:true,
+         
               msg:"{code:0,msg:'成本价格必须是数字'}"
             }
           }
@@ -42,7 +42,7 @@ sequelize.define('productSpec',{
         validate:{
             //商品销售价格正则验证
             isInt:{
-              isNumeric:true,
+            
               msg:"{code:0,msg:'销售价格必须是数字'}"
             }
           }
@@ -52,7 +52,7 @@ sequelize.define('productSpec',{
         validate:{
             //商品库存正则验证
             isInt:{
-              isNumeric:true,
+           
               msg:"{code:0,msg:'商品库存必须是数字'}"
             }
           }
@@ -62,7 +62,7 @@ sequelize.define('productSpec',{
         validate:{
             //商品库存预警正则验证
             isInt:{
-              isNumeric:true,
+             
               msg:"{code:0,msg:'商品库存预警必须是数字'}"
             }
           } 

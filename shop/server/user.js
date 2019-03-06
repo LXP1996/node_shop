@@ -1,5 +1,5 @@
 var user = require('./../model/index');
-
+let jwt = require('jsonwebtoken');
 //查看用户信息
 async function user_serach() {
     let data = [];
@@ -64,7 +64,14 @@ async function user_login(obj) {
     if (username) {
 
         if (password) {
-            return { code: 0, msg: "success", data: password }
+            //存储用户信息
+            const payload = {
+                userid: 1,
+            }
+            //生成token
+            const token=jwt.sign(payload,"keyword",{expiresIn:3600})
+
+            return { code: 0, msg: "success",token:"Bearer "+token}
 
         } else {
             return { code: 0, msg: "密码错误" }

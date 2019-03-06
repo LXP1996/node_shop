@@ -69,6 +69,15 @@ function query_collection(obj) {
 function delete_collection(obj) {
     return goods.delete_collection(obj);
 }
+function updata_goods_base(obj) {
+    return goods.updata_goods_base(obj);
+}
+
+function updata_productSpec(obj) {
+    return goods.updata_productSpec(obj);
+}
+
+
 
 module.exports = {
     goods_Type_add,
@@ -88,6 +97,8 @@ module.exports = {
     query_comments,
     add_collection,
     query_collection,
-    delete_collection
+    delete_collection,
+    updata_goods_base,
+    updata_productSpec
 }
 
