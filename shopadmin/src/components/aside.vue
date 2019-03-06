@@ -55,6 +55,11 @@ export default {
               index: "2 - 2",
               title: "商品发布",
               url: ""
+            }, {
+              src: "goodslist",
+              index: "2 - 3",
+              title: "商品列表",
+              url: ""
             }
           ]
         },

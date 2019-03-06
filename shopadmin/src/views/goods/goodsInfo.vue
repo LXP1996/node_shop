@@ -19,7 +19,7 @@
     <!-- 添加商品类型 -->
     <el-row>
       <el-col :span="13" :offset="4">
-        <el-select @change="two" v-model="topData" placeholder="选择分类">
+        <el-select @change="two" v-model="topData" :placeholder="topType">
           <el-option disabled :value="0">顶级分类</el-option>
           <el-option v-for="item in topOption" :key="item.id" :label="item.tname" :value="item.id"></el-option>
         </el-select>
@@ -68,7 +68,8 @@
 
     <el-row>
       <el-col :span="13" :offset="8">
-        <el-button type="primary" @click="save">保存</el-button>
+        <el-button v-if="!editor1" type="primary" @click="save">保存</el-button>
+        <el-button v-if="editor1" type="primary" @click="save_editor">修改数据</el-button>
         <el-button type="primary" @click="next">下一步</el-button>
       </el-col>
     </el-row>
@@ -76,9 +77,17 @@
 </template>
 <script>
 import { query_goodsType } from "@/api/goods.js";
+import axios from 'axios'
 export default {
+  props: {
+    flage: {},
+    editor1: {},
+    editorData: {}
+  },
   data() {
     return {
+      id:null,
+      topType:"选择分类",
       goodsname: "", //商品名称
       goodsstate: 2, //商品是否上架
       goodstypeID: "", //商品类型ID
@@ -130,6 +139,20 @@ export default {
     this.getgoodsType(0).then(res => {
       this.topOption = res.data;
     });
+    //判断是否修改数据
+    if (this.editor1) {
+      this.goodsname = this.editorData.goodsName;
+      if (this.editorData.goodsState == "true") {
+        this.goodsstate = true;
+      } else {
+        this.goodsstate = false;
+      }
+      console.log(this.editorData)
+      this.topType=this.editorData.goodsType.tname;
+      this.content=this.editorData.imgText
+      this.goodstypeID=this.editorData.goodsTypeID
+      this.id=this.editorData.id
+    }
   },
   methods: {
     //根据fid获取数据
@@ -174,29 +197,31 @@ export default {
     },
     //保存数据
     save() {
-      this.$confirm("是否要保存", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          this.$message({
-            message: "success",
-            type: "success"
-          });
-          this.$emit("goodsInfo", {
-            goodsname: this.goodsname,
-            goodsstate: this.goodsstate,
-            goodstypeID: this.goodstypeID,
-            content: this.content
-          });
+      if (this.validate()) {
+        this.$confirm("是否要保存", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
         })
-        .catch(() => {
-          this.$message({
-            message: "已经取消",
-            type: "error"
+          .then(() => {
+            this.$message({
+              message: "success",
+              type: "success"
+            });
+            this.$emit("goodsInfo", {
+              goodsname: this.goodsname,
+              goodsstate: this.goodsstate,
+              goodstypeID: this.goodstypeID,
+              content: this.content
+            });
+          })
+          .catch(() => {
+            this.$message({
+              message: "已经取消",
+              type: "error"
+            });
           });
-        });
+      }
     },
     //下一步
     next() {
@@ -230,6 +255,27 @@ export default {
         flage = true;
       }
       return flage;
+    },
+    save_editor(){
+      let data=new FormData();
+      data.append("goodsName",this.goodsname)
+      data.append("goodsState",this.goodsstate)
+      data.append("goodsTypeID",this.goodstypeID)
+      data.append("imgText",this.content)
+      data.append("id",this.id)
+      axios.post('/apis/api/updata_goods_base',data).then(res=>{
+           if(res.data.code==1){
+             this.$message({
+               type:"success",
+               message:"success"
+             })
+           }else{
+             this.$message({
+               type:"error",
+               message:"error"
+             })
+           }
+      })
     }
   }
 };

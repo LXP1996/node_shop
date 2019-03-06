@@ -18,3 +18,9 @@ export const query_goodsType=(fid)=>{
 }
 return  axios_.get(obj);
 }
+
+//存储商品基础信息
+export const saveBaseGoods=(obj)=>{
+
+  return axios_.post("api/goodsBase/add",obj);
+}

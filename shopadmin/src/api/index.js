@@ -32,12 +32,12 @@ class axios_ {
     }
 
     //post请求
-    async post() {
+    async post(url,params) {
         /**
          * post 发送formdata
          */
         let data = null
-        await axios.post(`"/apis/${this.url}"`, this.params).then(res => {
+        await axios.post(`"/apis/${url}"`, params).then(res => {
             data = res.data
         })
         return data;

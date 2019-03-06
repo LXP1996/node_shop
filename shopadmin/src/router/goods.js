@@ -6,4 +6,8 @@ export default[{
     path:"/goodsOnline",//商品发布路由
     name:"goodsOnline",
     component:()=>import('@/views/goods/goodsonline.vue')
+},{
+    path:"/goodsList",
+    name:"goodslist",
+    component:()=>import('@/views/goods/goodslist.vue')
 }]
