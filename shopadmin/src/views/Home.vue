@@ -21,6 +21,10 @@
 import aside from "@/components/aside";
 export default {
   name: "home",
+  data(){
+    return{
+    }
+  },
   components: {
     "app-aside": aside
   }

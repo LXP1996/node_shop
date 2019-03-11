@@ -43,5 +43,25 @@ sequelize.define('goods',{
     img:{
         type:DataTypes.STRING,
         allowNull:true 
+    },
+    desc:{
+        type:DataTypes.STRING,
+        validate:{
+            isEven:function(value){
+                if(!(/^[A-Za-z0-9\u4e00-\u9fa5]+$/.test(value))){
+                    throw new Error("{code:0,msg:'商品描述格式错误'}");
+                      }
+            }
+        }
+    },
+    integral:{
+        type:DataTypes.STRING,
+        validate:{
+            //父级ID正则验证
+            isInt:{
+              isNumeric:true,
+              msg:"{code:0,msg:'商品积分必须是数字'}"
+            }
+          }
     }
 })

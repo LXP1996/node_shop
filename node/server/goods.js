@@ -78,10 +78,12 @@ async function goods_add_base(obj) {
         'goodsState': obj.goodsState,
         'goodsTypeID': obj.goodsTypeID,
         'imgText': obj.imgText,
-        'img': obj.img
+        'img': obj.img,
+        "desc": obj.desc,
+        "integral": obj.integral
     });
     if (temp) {
-        return { code: 1, msg: "success",data:temp };
+        return { code: 1, msg: "success", data: temp };
     } else {
         return { code: 0, msg: "error" }
     }
@@ -93,14 +95,16 @@ async function updata_goods_base(obj) {
         'goodsState': obj.goodsState,
         'goodsTypeID': obj.goodsTypeID,
         'imgText': obj.imgText,
-        'img': obj.img
-    },{
-        where:{
-            id:obj.id
-        }
-    });
+        'img': obj.img,
+        "desc": obj.desc,
+        "integral": obj.integral
+    }, {
+            where: {
+                id: obj.id
+            }
+        });
     if (temp) {
-        return { code: 1, msg: "success",data:temp };
+        return { code: 1, msg: "success", data: temp };
     } else {
         return { code: 0, msg: "error" }
     }
@@ -116,6 +120,7 @@ async function productSpec(obj) {
         'inventory': parseInt(obj.inventory),
         'inventoryWarning': parseInt(obj.inventoryWarning),
         'goodsImg': obj.goodsImg,
+
     });
     if (temp) {
         return { code: 1, msg: "success" };
@@ -133,11 +138,11 @@ async function updata_productSpec(obj) {
         'inventory': parseInt(obj.inventory),
         'inventoryWarning': parseInt(obj.inventoryWarning),
         'goodsImg': obj.goodsImg,
-    },{
-        where:{
-            id:obj.id
-        }
-    });
+    }, {
+            where: {
+                id: obj.id
+            }
+        });
     if (temp) {
         return { code: 1, msg: "success" };
     } else {
@@ -149,21 +154,46 @@ async function updata_productSpec(obj) {
 async function productSpecSerachBase(obj) {
     let limit_ = obj.limit || 10;//查询数据长度
     let offset_ = obj.offset || 0;//从那条数据开始查询
+    let type = obj.type || null//选择商品的类型
     let data = [];
     let count = 0;
-    goods.goods.belongsTo(goods.goodsType,{foreignKey:"goodsTypeID",targetKey:"id"})
-    let temp = await goods.goods.findAndCountAll(
-        {
-            include:[{
-            model:goods.goodsType
-            }],
-            limit: parseInt(limit_),
-            offset: parseInt(offset_)
-        }).then(function (result) {
-            count = result.count;
-            data = result.rows;
-            
-        });
+    goods.goods.hasMany(goods.productSpec, { foreignKey: "goodsid", targetKey: "id" })
+    goods.goods.belongsTo(goods.goodsType, { foreignKey: "goodsTypeID", targetKey: "id" })
+    if (type == null) {
+        await goods.goods.findAndCountAll(
+            {
+                include: [{
+                    model: goods.goodsType
+                }, {
+                    model: goods.productSpec
+                }],
+                limit: parseInt(limit_),
+                offset: parseInt(offset_)
+            }).then(function (result) {
+                count = result.count;
+                data = result.rows;
+
+            });
+    } else {
+        await goods.goods.findAndCountAll(
+            {
+                include: [{
+                    model: goods.goodsType,
+                    where: {
+                        tname: type
+                    }
+                }, {
+                    model: goods.productSpec
+                }],
+                limit: parseInt(limit_),
+                offset: parseInt(offset_)
+            }).then(function (result) {
+                count = result.count;
+                data = result.rows;
+
+            });
+    }
+
 
     if (count >= 0) {
         return { code: 1, msg: "success", data: data, count: count };

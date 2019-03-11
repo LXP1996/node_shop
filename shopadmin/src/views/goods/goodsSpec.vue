@@ -212,6 +212,8 @@ export default {
       data.append("goodsState", this.msg.goodsstate);
       data.append("goodsTypeID", this.msg.goodstypeID);
       data.append("imgText", this.msg.content);
+      data.append("desc", this.msg.desc);
+      data.append("integral", this.msg.integral);
       return axios.post("/apis/api/goodsBase/add", data);
     },
     //提交商品规格

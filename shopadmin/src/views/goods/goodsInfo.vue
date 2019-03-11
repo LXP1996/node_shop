@@ -50,6 +50,18 @@
         </el-select>
       </el-col>
     </el-row>
+    <!-- 添加商品积分 -->
+    <el-row>
+      <el-col :span="15" :offset="4">
+        <el-input v-model="integral" clearable placeholder="输入商品积分"></el-input>
+      </el-col>
+    </el-row>
+    <!-- 添加商品描述 -->
+    <el-row>
+      <el-col :span="15" :offset="4">
+        <el-input v-model="desc" clearable placeholder="输入商品描述"></el-input>
+      </el-col>
+    </el-row>
     <!-- 图文混排 -->
     <el-row>
       <el-col :span="13" :offset="4">
@@ -77,7 +89,7 @@
 </template>
 <script>
 import { query_goodsType } from "@/api/goods.js";
-import axios from 'axios'
+import axios from "axios";
 export default {
   props: {
     flage: {},
@@ -86,13 +98,15 @@ export default {
   },
   data() {
     return {
-      id:null,
-      topType:"选择分类",
+      id: null,
+      topType: "选择分类",
       goodsname: "", //商品名称
       goodsstate: 2, //商品是否上架
       goodstypeID: "", //商品类型ID
       topOption: "", //顶级分类数据
       topData: "", //顶级分类数据
+      integral: null, //商品积分
+      desc: null, //商品描述
       twoType: {
         state: false,
         data: "",
@@ -147,11 +161,13 @@ export default {
       } else {
         this.goodsstate = false;
       }
-      console.log(this.editorData)
-      this.topType=this.editorData.goodsType.tname;
-      this.content=this.editorData.imgText
-      this.goodstypeID=this.editorData.goodsTypeID
-      this.id=this.editorData.id
+      console.log(this.editorData);
+      this.topType = this.editorData.goodsType.tname;
+      this.content = this.editorData.imgText;
+      this.goodstypeID = this.editorData.goodsTypeID;
+      this.id = this.editorData.id;
+      this.desc=this.editorData.desc;
+      this.integral=this.editorData.integral;
     }
   },
   methods: {
@@ -212,7 +228,9 @@ export default {
               goodsname: this.goodsname,
               goodsstate: this.goodsstate,
               goodstypeID: this.goodstypeID,
-              content: this.content
+              content: this.content,
+              integral:this.integral,
+              desc:this.desc
             });
           })
           .catch(() => {
@@ -251,31 +269,43 @@ export default {
           message: "商品详情不能为空",
           type: "error"
         });
+      } else if (this.integral == null) {
+        this.$message({
+          message: "商品积分不能为空",
+          type: "error"
+        });
+      } else if (this.desc == null) {
+        this.$message({
+          message: "商品描述不能为空",
+          type: "error"
+        });
       } else {
         flage = true;
       }
       return flage;
     },
-    save_editor(){
-      let data=new FormData();
-      data.append("goodsName",this.goodsname)
-      data.append("goodsState",this.goodsstate)
-      data.append("goodsTypeID",this.goodstypeID)
-      data.append("imgText",this.content)
-      data.append("id",this.id)
-      axios.post('/apis/api/updata_goods_base',data).then(res=>{
-           if(res.data.code==1){
-             this.$message({
-               type:"success",
-               message:"success"
-             })
-           }else{
-             this.$message({
-               type:"error",
-               message:"error"
-             })
-           }
-      })
+    save_editor() {
+      let data = new FormData();
+      data.append("goodsName", this.goodsname);
+      data.append("goodsState", this.goodsstate);
+      data.append("goodsTypeID", this.goodstypeID);
+      data.append("imgText", this.content);
+      data.append("id", this.id);
+      data.append("integral",this.integral);
+      data.append("desc",this.desc)
+      axios.post("/apis/api/updata_goods_base", data).then(res => {
+        if (res.data.code == 1) {
+          this.$message({
+            type: "success",
+            message: "success"
+          });
+        } else {
+          this.$message({
+            type: "error",
+            message: "error"
+          });
+        }
+      });
     }
   }
 };
