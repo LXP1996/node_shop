@@ -5,7 +5,7 @@
         <span>我的购物车</span>
       </div>
       <div>
-        <span>继续购物></span>
+        <router-link tag="span" :to="{name:'index'}">继续购物></router-link>
       </div>
     </div>
     <!-- 购物车 -->
@@ -42,28 +42,28 @@
         </div>
 
         <div class="goodsname">
-          <img src="@/assets/p1.png" alt srcset>
+          <img :src="item.productSpec.goodsImg.split(',')[0]" alt srcset>
           <span>
-            {{item.goodsName}}
+          {{item.good.goodsName}}  {{item.productSpec.goodsName}}
           </span>
         </div>
 
         <div class="price">
-            <span>{{item.price}}</span>
+            <span>{{item.productSpec.salesPrice}}</span>
         </div>
 
         <div class="num">
             <div @click="reduce(item)">-</div>
-            <div>{{item.count}}</div>
+            <div>{{item.goodsNum}}</div>
             <div @click="add(item)">+</div>
         </div>
 
         <div class="intergal">
-           {{item.intergal}}
+           {{item.good.integral==null?"无积分":item.good.integral}}
         </div>
 
         <div class="subtotal">
-            {{item.price*item.count}}
+            {{item.productSpec.salesPrice*item.goodsNum}}
         </div>
         <div>
             删除
@@ -74,7 +74,7 @@
     <div class="total">
        商品总价<span>&yen;{{totalMoney}}</span>
        &nbsp; &nbsp; &nbsp;
-       <button>去结算</button>
+       <button @click="settlement">去结算</button>
     </div>
     </div>
 
@@ -83,6 +83,7 @@
   </div>
 </template>
 <script>
+import axios from 'axios'
 export default {
     data(){
         return{
@@ -90,43 +91,50 @@ export default {
          allselect:{
           flge:false,
          },
-         data:[{
-             chexkBox:false,
-             goodsName:"Z3 全面屏 6GB+64GB 极光蓝 颜色：极光蓝",
-             price:1798.00,
-             count:1,
-             intergal:1698,
-             subtoal:0,
-
-         },
-         {
-             chexkBox:false,
-             goodsName:"Z3 全面屏 6GB+64GB 极光蓝 颜色：极光蓝",
-             price:1798.00,
-             count:1,
-             intergal:1698,
-             subtoal:0,
-
-         }],
+         data:null,
          totalMoney:0
 
         }
     },
+    created(){
+    axios.get('/apis/api/car/serach',{
+      params:{
+        token:this.$store.getters.token
+      }
+    }).then(res=>{
+      if(res.data.code==1){
+        this.data=res.data.data;
+      }
+    })
+    },
     methods:{
+      //结算
+      settlement(){
+        let arr=[];
+        //将选中的商品ID传到核对订单页面
+         this.data.forEach((val)=>{
+           if(val.chexkBox){
+             arr.push(val.productSpec.id)
+           }
+         })
+       this.$router.push({name:"confirmOrder",params:{
+         id:arr
+       }})
+      },
         reduce(item){
-         if(item.count<=1){
-         item.count=1;
+         if(item.goodsNum<=1){
+         item.goodsNum=1;
          }else{
-             item.count=item.count-1;
+             item.goodsNum=item.goodsNum-1;
          }
           if(item.chexkBox){
-            this.totalMoney-=item.price;
+            this.totalMoney-=item.productSpec.salesPrice;
             }
         },
         add(item){
-            item.count++
+            item.goodsNum++
             if(item.chexkBox){
-            this.totalMoney+=item.price;
+            this.totalMoney+=item.productSpec.salesPrice;
             }
         },
         select_(item){
@@ -135,10 +143,10 @@ export default {
             //计算总价
             if(item.chexkBox){
               this.index++
-             this.totalMoney+=item.price*item.count
+             this.totalMoney+=item.productSpec.salesPrice*item.goodsNum
             }else{
               this.index--
-                this.totalMoney-=item.price*item.count
+                this.totalMoney-=item.productSpec.salesPrice*item.goodsNum
             }
              //单选都选中则全选选中
             if(this.index==this.data.length){
@@ -153,12 +161,12 @@ export default {
             if(this.allselect.flge){
                 this.data.forEach((val)=>{
                     val.chexkBox=true;
-                    this.totalMoney+=val.price*val.count
+                    this.totalMoney+=val.productSpec.salesPrice*val.goodsNum
                 })
             }else{
               this.data.forEach((val)=>{
                     val.chexkBox=false;
-                     this.totalMoney-=val.price*val.count
+                     this.totalMoney-=val.productSpec.salesPrice*val.goodsNum
                 })
             }
         }

@@ -9,18 +9,18 @@
       <div class="form">
         <div class="user">
           <div v-if="!login_flge">+86</div>
-          <input type="text" placeholder="输入电话号码">
+          <input v-model="username" type="text" placeholder="输入电话号码">
         </div>
         <div class="info" v-if="!login_flge">
           <input v-if="!login_flge" type="text" placeholder="输入验证码">
           <div v-if="!login_flge">获取验证码</div>
         </div>
         <div class="info1" v-if="login_flge">
-      <input  type="text" placeholder="输入密码">
+      <input v-model="password"  type="text" placeholder="输入密码">
         </div>
       </div>
 
-      <button class="login_">登录</button>
+      <button class="login_" @click="login_user_pwd">登录</button>
       <button class="register" @click="register">注册账号</button>
 
       <div class="tip" v-if="!login_flge">
@@ -31,10 +31,13 @@
   </div>
 </template>
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
-      login_flge: false
+      login_flge: false,
+      username:null,
+      password:null
     };
   },
   methods:{
@@ -43,6 +46,29 @@ export default {
       },
       register(){
           this.$router.push({name:"register"})
+      },
+      //账号密码登录
+      login_user_pwd(){
+        axios.get("/apis/api/user/userlogin",{
+          params:{
+            username:this.username,
+            password:this.password,
+          }
+        }).then(res=>{
+          if(res.data.code==1){
+            window.sessionStorage.setItem("username",res.data.username);
+            window.sessionStorage.setItem("token",res.data.token);
+            this.$store.commit('set_username',res.data.username);
+            this.$store.commit('set_token',res.data.token);
+            this.$store.commit('set_login');
+            this.$router.push({name:"index"})
+          }else{
+            this.$message({
+              type:"error",
+              messgae:res.data.msg
+            })
+          }
+        })
       }
   }
 };

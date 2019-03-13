@@ -35,7 +35,7 @@ await  controller.user_add(obj).then(res=>{
 //用户登陆user_login
 router.get("/userlogin",async(ctx,next)=>{
   var obj=ctx.request.query;
-await  controller.user_login(obj).then(res=>{
+await  controller.user_login(obj,ctx).then(res=>{
   ctx.body=res;
 }).catch(err => {
   ctx.body = err.errors[0].message

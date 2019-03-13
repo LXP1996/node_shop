@@ -25,6 +25,11 @@ export default new Router({
         path:"/shoppingcart",
         name:"shoppingcart",
         component:()=>import("@/components/shoppingcart.vue")
+      },
+      {
+        path:"/confirmOrder",
+        name:"confirmOrder",
+        component:()=>import("@/components/confirmOrder.vue")
       }]
     },
     {

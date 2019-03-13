@@ -20,19 +20,21 @@
     <!-- 个人菜单 -->
     <ul class="user_menu">
       <li class="li" @mouseenter="flage=true" @mouseleave="flage=false">
+        <span>{{usernmae}}</span>
         <img src="@/assets/user-name.png" alt>
         <transition name="fade">
           <ul v-show="flage" class="menu">
              <router-link tag="li" :to="{name:'shoppingcart'}"> <img src="@/assets/car.png" alt="">购物车</router-link>
             <li> <img src="@/assets/order.png" alt="">我的订单</li>
             <li> <img src="@/assets/shop.png" alt="">我的商城</li>
-            <li>
+            <router-link tag="li" :to="{name:'login'}">
               <img src="@/assets/user.png" alt="">
-              登录/注册</li>
+              登录/注册</router-link>
           </ul>
         </transition>
       </li>
     </ul>
+    
   </div>
 </template>
 <script>
@@ -81,6 +83,12 @@ export default {
       ]
     };
   },
+  computed:{
+    usernmae(){
+    return this.$store.getters.username
+    }
+  }
+  ,
   mounted(){
    
   },
@@ -184,6 +192,8 @@ export default {
     .li {
       position: relative;
       padding: 1rem;
+      color: #ffffff;
+      cursor: pointer;
     }
     // 下拉菜单样式
     .menu {

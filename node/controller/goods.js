@@ -1,5 +1,5 @@
 let goods = require("./../server/goods");
-
+let jwt=require("./../pluigs/jwt")
 function goods_Type_add(obj) {
     return goods.goods_Type_add(obj);
 }
@@ -37,12 +37,12 @@ function goodsState(obj) {
     return goods.goodsState(obj);
 }
 
-function add_to_car(obj) {
-    return goods.add_to_car(obj);
+  function add_to_car(obj) {
+ return jwt.jwt_comfirm(goods.add_to_car,obj)
 }
 
 function car_all_info(obj) {
-    return goods.car_all_info(obj);
+    return jwt.jwt_comfirm(goods.car_all_info,obj);
 }
 
 function car_delet(obj) {

@@ -296,7 +296,7 @@ async function car_all_info(obj) {
         attributes: ["id", "goodsNum"],//只查询ID和GOODSNAME
         include: [{
             model: goods.goods,
-            attributes: ["id", "goodsName"]//只查询ID和GOODSNAME
+            attributes: ["id", "goodsName","integral"]//只查询ID和GOODSNAME
         }, {
             model: goods.productSpec
         }],

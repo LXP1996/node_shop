@@ -64,5 +64,24 @@ module.exports = (sequelize, DataTypes) =>
                     }
                 }
             }
+        },
+        username: {
+            type: DataTypes.STRING,
+            validate: {
+                isEven: function (value) {
+                    if (!(/^[A-Za-z0-9\u4e00-\u9fa5]+$/.test(value))) {
+                        throw new Error("{code:0,msg:'格式错误'}");
+                    }
+                }
+            }
+        },
+        phone: {
+            type: DataTypes.STRING,
+            validate: {
+                isInt: {
+                    isNumeric: true,
+                    msg: "{code:0,msg:'必须是数字'}"
+                }
+            }
         }
     })

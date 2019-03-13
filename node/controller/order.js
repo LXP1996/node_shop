@@ -1,7 +1,8 @@
 let order = require("./../server/order");
+let jwt=require('./../pluigs/jwt')
 
 function add_address(obj) {
-    return order.add_address(obj);
+    return jwt.jwt_comfirm( order.add_address,obj);
 }
 
 function delete_address(obj) {
@@ -27,7 +28,7 @@ function query_a(obj) {
 }
 
 function query_address(obj) {
-    return order.query_address(obj);
+    return jwt.jwt_comfirm(order.query_address,obj);
 }
 
 function add_order(obj) {

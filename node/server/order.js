@@ -19,7 +19,9 @@ async function add_address(obj) {
         cID: obj.cID,
         aID: obj.aID,
         DetailedAddress: obj.DetailedAddress,
-        defaultAddress: obj.defaultAddress
+        defaultAddress: obj.defaultAddress,
+        username:obj.username,
+        phone:obj.phone
     })
 
     if (temp) {
@@ -130,9 +132,9 @@ async function query_a(obj) {
 
 //查询收获地址
 async function query_address(obj) {
-    order.address.belongsTo(order.provinces, { foreignKey: "pID", targetKey: "id" });
-    order.address.belongsTo(order.cities, { foreignKey: "cID", targetKey: "id" });
-    order.address.belongsTo(order.areas, { foreignKey: "aID", targetKey: "id" });
+    order.address.belongsTo(order.provinces, { foreignKey: "pID", targetKey: "provinceid" });
+    order.address.belongsTo(order.cities, { foreignKey: "cID", targetKey: "cityid" });
+    order.address.belongsTo(order.areas, { foreignKey: "aID", targetKey: "areaid" });
     let temp = "";
     if (obj.addressID != null) {
         temp = await order.address.findAll({

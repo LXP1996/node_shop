@@ -10,7 +10,6 @@ router.post("/address_add",async (ctx) => {
     }).catch(err => {
         ctx.body = err.errors[0].message
     });
-
 })
 //删除收获地址
 router.post("/delete_address",async (ctx) => {

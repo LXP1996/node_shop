@@ -108,11 +108,11 @@ export default {
     },
     //加入购物车
     add_car() {
-      console.log(this.guige);
       let data = new FormData();
       data.append("goodsID", this.guige.goodsID);
       data.append("goodsNum", this.count);
       data.append("goods_ID", this.guige.id);
+      data.append("token",this.$store.getters.token)
       axios.post("/apis/api/car/add", data).then(res => {
         if (res.data.code == 1) {
           this.$message({
@@ -122,7 +122,7 @@ export default {
         }else{
           this.$message({
             type: "error",
-            message: "添加失败"
+            message: res.data.msg
           });
         }
       });

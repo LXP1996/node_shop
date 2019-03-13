@@ -1,5 +1,5 @@
 var user = require('./../model/index');
-let jwt = require('jsonwebtoken');
+var jwt=require('./../pluigs/jwt');
 //查看用户信息
 async function user_serach() {
     let data = [];
@@ -65,13 +65,9 @@ async function user_login(obj) {
 
         if (password) {
             //存储用户信息
-            const payload = {
-                userid: 1,
-            }
-            //生成token
-            const token=jwt.sign(payload,"keyword",{expiresIn:3600})
-
-            return { code: 0, msg: "success",token:"Bearer "+token}
+           const token= jwt.crate_jwt(username.id);
+          
+            return { code: 1, msg: "success","token":"Bearer "+token,username:username.username}
 
         } else {
             return { code: 0, msg: "密码错误" }
